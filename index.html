@@ -95,7 +95,17 @@
       <label class="theme-option"><input type="radio" name="theme" value="lavender"><span class="theme-preview preview-lavender" aria-hidden="true"><span class="preview-orb"></span><span class="preview-bar"></span><span class="preview-cards"></span><span class="theme-check">✓</span></span><strong>Lavender</strong><span class="theme-description">Soft & dreamy</span></label>
       <label class="theme-option"><input type="radio" name="theme" value="sunset"><span class="theme-preview preview-sunset" aria-hidden="true"><span class="preview-orb"></span><span class="preview-bar"></span><span class="preview-cards"></span><span class="theme-check">✓</span></span><strong>Sunset</strong><span class="theme-description">Warm & golden</span></label>
       <label class="theme-option"><input type="radio" name="theme" value="midnight"><span class="theme-preview preview-midnight" aria-hidden="true"><span class="preview-orb"></span><span class="preview-bar"></span><span class="preview-cards"></span><span class="theme-check">✓</span></span><strong>Midnight</strong><span class="theme-description">Deep & focused</span></label>
+      <label class="theme-option"><input type="radio" name="theme" value="scifi"><span class="theme-preview preview-scifi" aria-hidden="true"><span class="preview-orb"></span><span class="preview-bar"></span><span class="preview-cards"></span><span class="theme-check">✓</span></span><strong>Sci-fi</strong><span class="theme-description">Your neon universe</span></label>
     </fieldset>
+    <section id="scifi-controls" class="scifi-controls" aria-labelledby="scifi-colors-heading" hidden>
+      <div class="section-heading"><h3 id="scifi-colors-heading">Tune your universe</h3><button id="scifi-reset" class="secondary-button" type="button">Reset colors</button></div>
+      <p class="settings-help">Choose any neon accent and background. Text adjusts for readability.</p>
+      <div class="scifi-color-grid">
+        <div><label for="scifi-accent-picker">Neon accent</label><div class="color-control"><input id="scifi-accent-picker" type="color" value="#4de3ff" aria-label="Pick sci-fi neon accent"><input id="scifi-accent-hex" type="text" value="#4de3ff" maxlength="7" pattern="#[0-9a-fA-F]{6}" aria-label="Neon accent hex color" spellcheck="false" autocomplete="off"></div></div>
+        <div><label for="scifi-background-picker">Background</label><div class="color-control"><input id="scifi-background-picker" type="color" value="#07111f" aria-label="Pick sci-fi background"><input id="scifi-background-hex" type="text" value="#07111f" maxlength="7" pattern="#[0-9a-fA-F]{6}" aria-label="Background hex color" spellcheck="false" autocomplete="off"></div></div>
+      </div>
+      <p id="scifi-color-status" class="settings-help" role="status" aria-live="polite"></p>
+    </section>
     <section class="settings-section" aria-labelledby="personal-heading">
       <h3 id="personal-heading">Your everyday space</h3>
       <div class="settings-grid">

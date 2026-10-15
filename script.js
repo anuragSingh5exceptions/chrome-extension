@@ -1,8 +1,8 @@
 'use strict';
 const $ = id => document.getElementById(id);
-const { defaults, validate, safeUrl, parseBackup, engines, themes } = HomeSettings;
+const { defaults, validate, safeUrl, parseBackup, engines, themes, sciFiPalette } = HomeSettings;
 const storageKey = 'homepage-settings-v1';
-const themeNames = { light: 'Sage', dark: 'Forest', ocean: 'Ocean', lavender: 'Lavender', sunset: 'Sunset', midnight: 'Midnight' };
+const themeNames = { light: 'Sage', dark: 'Forest', ocean: 'Ocean', lavender: 'Lavender', sunset: 'Sunset', midnight: 'Midnight', scifi: 'Sci-fi' };
 const themeOptions = document.querySelectorAll('input[name="theme"]');
 const dialog = $('customize-dialog');
 let settings = defaults();
@@ -47,7 +47,14 @@ function updateClock() {
 }
 
 function renderAppearance() {
+  document.documentElement.dataset.theme = settings.theme;
   document.body.dataset.theme = settings.theme;
+  const palette = sciFiPalette(settings.scifiAccent,settings.scifiBackground);
+  for (const [key,value] of Object.entries(palette)) document.documentElement.style.setProperty(`--scifi-${key}`,value);
+  $('scifi-controls').hidden = settings.theme !== 'scifi';
+  document.documentElement.style.colorScheme = settings.theme === 'scifi' ? palette.scheme : '';
+  document.body.style.colorScheme = settings.theme === 'scifi' ? palette.scheme : '';
+  syncSciFiControls();
   document.querySelector('.weekend-widget').hidden = !settings.showWeekend;
   document.body.classList.toggle('weekend-visible', settings.showWeekend);
   document.body.classList.toggle('widgets-visible', settings.showWeekend || settings.showCalendar);
@@ -76,6 +83,15 @@ function renderAppearance() {
   $('search-input').setAttribute('aria-label', `Search ${engine.name}`);
   $('remove-background').disabled = !settings.background;
   updateClock();
+}
+function syncSciFiControls() {
+  for (const part of ['accent','background']) {
+    const value = settings[part === 'accent' ? 'scifiAccent' : 'scifiBackground'];
+    $(`scifi-${part}-picker`).value = value;
+    const hex = $(`scifi-${part}-hex`);
+    // Leave a partially typed hex code intact while the user is editing it.
+    if (document.activeElement !== hex) hex.value = value;
+  }
 }
 function syncControls() {
   themeOptions.forEach(option => { option.checked = option.value === settings.theme; });
@@ -187,6 +203,35 @@ dialog.addEventListener('click', event => {
   if (event.target !== dialog) return;
   const bounds = dialog.getBoundingClientRect();
   if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
+});
+for (const part of ['accent','background']) {
+  const picker = $(`scifi-${part}-picker`);
+  const hex = $(`scifi-${part}-hex`);
+  const applyColor = value => {
+    if (!/^#[0-9a-f]{6}$/i.test(value)) {
+      hex.setAttribute('aria-invalid','true');
+      $('scifi-color-status').textContent = 'Enter a hex color such as #4de3ff.';
+      return;
+    }
+    hex.setAttribute('aria-invalid','false');
+    $('scifi-color-status').textContent = '';
+    settings[part === 'accent' ? 'scifiAccent' : 'scifiBackground'] = value.toLowerCase();
+    renderAppearance(); save('Sci-fi colors saved.');
+  };
+  picker.addEventListener('input', () => { hex.value = picker.value; applyColor(picker.value); });
+  hex.addEventListener('input', () => applyColor(hex.value));
+  hex.addEventListener('blur', () => {
+    hex.value = settings[part === 'accent' ? 'scifiAccent' : 'scifiBackground'];
+    hex.setAttribute('aria-invalid','false');
+    $('scifi-color-status').textContent = '';
+  });
+}
+$('scifi-reset').addEventListener('click', () => {
+  settings.scifiAccent = defaults().scifiAccent;
+  settings.scifiBackground = defaults().scifiBackground;
+  for (const part of ['accent','background']) $(`scifi-${part}-hex`).setAttribute('aria-invalid','false');
+  $('scifi-color-status').textContent = '';
+  renderAppearance(); save('Sci-fi colors reset.');
 });
 themeOptions.forEach(option => option.addEventListener('change', () => {
   settings.theme = option.value; renderAppearance(); save(`${themeNames[settings.theme]} theme saved.`);

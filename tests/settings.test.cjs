@@ -34,7 +34,7 @@ test('invalid backups fail before changes can be applied', () => {
 // and native dialog behavior still require a manual extension preview.
 function boot(initial = {}, failWrites = false) {
   class Element {
-    constructor() { this.children=[]; this.listeners={}; this.attributes={}; this.dataset={}; this.style={}; this.value=''; this.textContent=''; this.hidden=false; this.checked=false; this.type='text'; this.files=[]; this.classList={toggle(){},remove(){}}; }
+    constructor() { this.children=[]; this.listeners={}; this.attributes={}; this.dataset={}; this.style={setProperty(key,value){this[key]=value}}; this.value=''; this.textContent=''; this.hidden=false; this.checked=false; this.type='text'; this.files=[]; this.classList={toggle(){},remove(){}}; }
     addEventListener(name, handler) { this.listeners[name]=handler; }
     append(...children) { this.children.push(...children); }
     replaceChildren(...children) { this.children=children; }
@@ -51,7 +51,7 @@ function boot(initial = {}, failWrites = false) {
   const radios=settingsApi.themes.map(value=>Object.assign(new Element(),{value}));
   for (const key of ['compact','showArt','showShortcuts','showFocus','showHistory','showWeekend','showCalendar']) get('setting-'+key).type='checkbox';
   const store=new Map(Object.entries(initial));
-  const context={HomeSettings:settingsApi, document:{addEventListener(name,handler){this.listeners ||= {};this.listeners[name]=handler;},dispatchEvent(event){this.listeners?.[event.type]?.(event);},getElementById:get,querySelector:get,querySelectorAll:selector=>selector.includes('name=')?radios:[],createElement:()=>new Element(),body:new Element()},localStorage:{getItem:key=>store.get(key)||null,setItem:(key,value)=>{if(failWrites)throw Error('Quota');store.set(key,value);}},Date,Intl,URL,Event,setInterval(){},setTimeout(){},console};
+  const context={HomeSettings:settingsApi, document:{documentElement:new Element(),addEventListener(name,handler){this.listeners ||= {};this.listeners[name]=handler;},dispatchEvent(event){this.listeners?.[event.type]?.(event);},getElementById:get,querySelector:get,querySelectorAll:selector=>selector.includes('name=')?radios:[],createElement:()=>new Element(),body:new Element()},localStorage:{getItem:key=>store.get(key)||null,setItem:(key,value)=>{if(failWrites)throw Error('Quota');store.set(key,value);}},Date,Intl,URL,Event,setInterval(){},setTimeout(){},console};
   vm.runInNewContext(fs.readFileSync(require.resolve('../script.js'),'utf8'),context);
   return {get,store,context,radios,change(id,value,checked){const el=get(id);el.value=value;el.checked=checked;el.listeners.change?.();el.listeners.input?.();},saved(){return JSON.parse(store.get('homepage-settings-v1'));}};
 }
@@ -179,4 +179,50 @@ test('calendar visibility is independent of weekend visibility and survives rest
  const old=settingsApi.defaults();delete old.showCalendar;
  assert.equal(settingsApi.validate(old).showCalendar,true);
  assert.throws(()=>settingsApi.validate({...old,showCalendar:'yes'}));
+});
+
+test('sci-fi theme supports custom colors, restores them, and resets to defaults', () => {
+ const page=boot();
+ page.radios.find(option=>option.value==='scifi').listeners.change();
+ assert.equal(page.context.document.body.dataset.theme,'scifi');
+ assert.equal(page.get('scifi-controls').hidden,false);
+ page.change('scifi-accent-picker','#ff30b8');page.change('scifi-background-hex','#190b22');
+ assert.equal(page.saved().scifiAccent,'#ff30b8');assert.equal(page.saved().scifiBackground,'#190b22');
+ assert.equal(page.context.document.documentElement.style['--scifi-neon'],'#ff30b8');
+ assert.equal(page.context.document.documentElement.dataset.theme,'scifi');
+ assert.equal(page.context.document.documentElement.style.colorScheme,'dark');
+ const next=boot(Object.fromEntries(page.store));
+ assert.equal(next.get('scifi-accent-picker').value,'#ff30b8');assert.equal(next.get('scifi-background-hex').value,'#190b22');
+ next.get('scifi-reset').listeners.click();
+ assert.equal(next.saved().scifiAccent,settingsApi.defaults().scifiAccent);
+ page.radios.find(option=>option.value==='light').listeners.change();
+ assert.equal(page.get('scifi-controls').hidden,true);assert.equal(page.context.document.body.style.colorScheme,'');
+ assert.equal(page.context.document.documentElement.dataset.theme,'light');
+ assert.equal(page.context.document.documentElement.style.colorScheme,'');
+});
+test('sci-fi color inputs reject incomplete or injected values without losing settings', () => {
+ const page=boot();page.change('scifi-accent-hex','#ffaa00');
+ page.change('scifi-accent-hex','#ff');
+ assert.equal(page.saved().scifiAccent,'#ffaa00');assert.equal(page.get('scifi-accent-hex').attributes['aria-invalid'],'true');
+ page.get('scifi-accent-hex').listeners.blur();assert.equal(page.get('scifi-accent-hex').value,'#ffaa00');
+ for(const scifiAccent of ['red','#fff','#123456;background:red',null])assert.throws(()=>settingsApi.validate({...settingsApi.defaults(),scifiAccent}));
+ const old=settingsApi.defaults();delete old.scifiAccent;delete old.scifiBackground;
+ assert.equal(settingsApi.validate(old).scifiAccent,'#4de3ff');
+ const custom={...settingsApi.defaults(),theme:'scifi',scifiAccent:'#ff30b8',scifiBackground:'#190b22'};
+ assert.deepEqual(settingsApi.parseBackup(JSON.stringify({app:'a-little-space',version:1,settings:custom})),custom);
+});
+test('sci-fi palette keeps text and accent labels readable for light and dark choices', () => {
+ const luminance=hex=>hex.slice(1).match(/../g).map(c=>parseInt(c,16)/255).map(v=>v<=.04045?v/12.92:((v+.055)/1.055)**2.4).reduce((sum,v,i)=>sum+v*[.2126,.7152,.0722][i],0);
+ const contrast=(a,b)=>(Math.max(luminance(a),luminance(b))+.05)/(Math.min(luminance(a),luminance(b))+.05);
+ for(const background of ['#000000','#ffffff','#808080','#ff0000','#0000ff','#07111f'])for(const accent of ['#000000','#ffffff',background,'#4de3ff','#ffff00']) {
+  const palette=settingsApi.sciFiPalette(accent,background);
+  assert(contrast(palette.ink,background)>=4.5);
+  assert(contrast(palette.highlight,background)>=4.5);
+  assert(contrast(palette.highlight,palette.surface)>=4.5);
+  assert(contrast(palette.highlight,palette.art)>=4.5);
+  assert(contrast(palette.ink,palette.surface)>=4.5);
+  assert(contrast(palette.ink,palette.focus)>=4.5);
+  assert(contrast(palette.muted,palette.surface)>=4.5);
+  assert(contrast(palette.buttonInk,palette.highlight)>=4.5);
+ }
 });
