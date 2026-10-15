@@ -49,11 +49,12 @@ function boot(initial = {}, failWrites = false) {
   const nodes=new Map();
   const get=id=>{if(!nodes.has(id))nodes.set(id,new Element());return nodes.get(id);};
   const radios=settingsApi.themes.map(value=>Object.assign(new Element(),{value}));
+  const artworks=settingsApi.artworks.map(value=>Object.assign(new Element(),{value}));
   for (const key of ['compact','showArt','showShortcuts','showFocus','showHistory','showWeekend','showCalendar']) get('setting-'+key).type='checkbox';
   const store=new Map(Object.entries(initial));
-  const context={HomeSettings:settingsApi, document:{documentElement:new Element(),addEventListener(name,handler){this.listeners ||= {};this.listeners[name]=handler;},dispatchEvent(event){this.listeners?.[event.type]?.(event);},getElementById:get,querySelector:get,querySelectorAll:selector=>selector.includes('name=')?radios:[],createElement:()=>new Element(),body:new Element()},localStorage:{getItem:key=>store.get(key)||null,setItem:(key,value)=>{if(failWrites)throw Error('Quota');store.set(key,value);}},Date,Intl,URL,Event,setInterval(){},setTimeout(){},console};
+  const context={HomeSettings:settingsApi, document:{documentElement:new Element(),addEventListener(name,handler){this.listeners ||= {};this.listeners[name]=handler;},dispatchEvent(event){this.listeners?.[event.type]?.(event);},getElementById:get,querySelector:get,querySelectorAll:selector=>selector.includes('artwork')?artworks:selector.includes('name=')?radios:[],createElement:()=>new Element(),body:new Element()},localStorage:{getItem:key=>store.get(key)||null,setItem:(key,value)=>{if(failWrites)throw Error('Quota');store.set(key,value);}},Date,Intl,URL,Event,setInterval(){},setTimeout(){},console};
   vm.runInNewContext(fs.readFileSync(require.resolve('../script.js'),'utf8'),context);
-  return {get,store,context,radios,change(id,value,checked){const el=get(id);el.value=value;el.checked=checked;el.listeners.change?.();el.listeners.input?.();},saved(){return JSON.parse(store.get('homepage-settings-v1'));}};
+  return {get,store,context,radios,artworks,change(id,value,checked){const el=get(id);el.value=value;el.checked=checked;el.listeners.change?.();el.listeners.input?.();},saved(){return JSON.parse(store.get('homepage-settings-v1'));}};
 }
 test('migrates previous preferences, edits settings, and restores them on next load', () => {
   const page=boot({'homepage-theme':'midnight','homepage-focus':'Finish work'});
@@ -225,4 +226,38 @@ test('sci-fi palette keeps text and accent labels readable for light and dark ch
   assert(contrast(palette.muted,palette.surface)>=4.5);
   assert(contrast(palette.buttonInk,palette.highlight)>=4.5);
  }
+});
+
+test('artwork design, speed, and custom color persist independently of the theme',()=>{
+ const page=boot();
+ for(const option of page.artworks) {
+  option.listeners.change();
+  assert.equal(page.get('.art').dataset.design,option.value);
+  assert.equal(page.saved().artwork,option.value);
+ }
+ page.change('art-speed','off');assert.equal(page.get('.art').dataset.speed,'off');
+ page.change('art-color','#ffaa22');assert.equal(page.saved().artColor,'#ffaa22');
+ assert.equal(page.get('.art').style['--art-ink'],'#ffaa22');
+ assert.equal(page.context.document.body.dataset.theme,'light');
+ const next=boot(Object.fromEntries(page.store));
+ assert.equal(next.get('.art').dataset.design,'constellation');assert.equal(next.get('art-speed').value,'off');
+ assert.equal(next.get('art-color').value,'#ffaa22');
+ next.get('art-color-reset').listeners.click();assert.equal(next.saved().artColor,'');
+ assert.equal(next.get('.art').style['--art-ink'],'var(--highlight)');
+});
+test('artwork settings support old backups and reject invalid imported designs',()=>{
+ const old=settingsApi.defaults();delete old.artwork;delete old.artSpeed;delete old.artColor;
+ assert.equal(settingsApi.validate(old).artwork,'orbit');assert.equal(settingsApi.validate(old).artSpeed,'slow');
+ for(const update of [{artwork:'unknown'},{artSpeed:'infinite'},{artColor:'url(secret)'},{artColor:null}])assert.throws(()=>settingsApi.validate({...old,...update}));
+ for(const artwork of settingsApi.artworks) {
+  const custom={...settingsApi.defaults(),artwork,artSpeed:'fast',artColor:'#abcdef'};
+  assert.deepEqual(settingsApi.parseBackup(JSON.stringify({app:'a-little-space',version:1,settings:custom})),custom);
+ }
+});
+test('artwork motion pauses when the document becomes hidden',()=>{
+ const page=boot();assert.equal(page.context.document.documentElement.dataset.motion,'running');
+ page.context.document.hidden=true;page.context.document.listeners.visibilitychange();
+ assert.equal(page.context.document.documentElement.dataset.motion,'paused');
+ page.context.document.hidden=false;page.context.document.listeners.visibilitychange();
+ assert.equal(page.context.document.documentElement.dataset.motion,'running');
 });

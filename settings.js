@@ -1,6 +1,8 @@
 (function (root) {
   'use strict';
   const themes = ['light', 'dark', 'ocean', 'lavender', 'sunset', 'midnight', 'scifi'];
+  const artworks = ['orbit','radar','planet','constellation'];
+  const artSpeeds = ['off','slow','normal','fast'];
   const icons = ['github', 'youtube', 'gmail', 'star', 'code', 'book', 'globe'];
   const engines = {
     google: { name: 'Google', url: 'https://www.google.com/search' },
@@ -8,7 +10,7 @@
     bing: { name: 'Bing', url: 'https://www.bing.com/search' }
   };
   function defaults() {
-    return { theme: 'light', scifiAccent: '#4de3ff', scifiBackground: '#07111f', name: '', clock: 'auto', compact: false, showArt: true,
+    return { artwork: 'orbit', artSpeed: 'slow', artColor: '', theme: 'light', scifiAccent: '#4de3ff', scifiBackground: '#07111f', name: '', clock: 'auto', compact: false, showArt: true,
       showShortcuts: true, showFocus: true, showHistory: false, showWeekend: true, showCalendar: true, engine: 'google', background: '', focus: '', focusDone: false,
       shortcuts: [
         { name: 'GitHub', url: 'https://github.com/', description: 'Build something great', icon: 'github' },
@@ -26,6 +28,12 @@
   function validate(value) {
     if (!value || typeof value !== 'object' || Array.isArray(value)) throw new Error('Invalid settings.');
     const next = defaults();
+    if (value.artwork !== undefined && !artworks.includes(value.artwork)) throw new Error('Invalid artwork design.');
+    if (value.artSpeed !== undefined && !artSpeeds.includes(value.artSpeed)) throw new Error('Invalid artwork speed.');
+    if (value.artColor !== undefined && (typeof value.artColor !== 'string' || value.artColor !== '' && !/^#[0-9a-f]{6}$/i.test(value.artColor))) throw new Error('Invalid artwork color.');
+    next.artwork = value.artwork ?? next.artwork;
+    next.artSpeed = value.artSpeed ?? next.artSpeed;
+    next.artColor = (value.artColor ?? next.artColor).toLowerCase();
     for (const key of ['scifiAccent', 'scifiBackground']) {
       if (value[key] !== undefined && (typeof value[key] !== 'string' || !/^#[0-9a-f]{6}$/i.test(value[key]))) throw new Error('Use a six-digit hex color for the sci-fi theme.');
       if (value[key] !== undefined) next[key] = value[key].toLowerCase();
@@ -86,7 +94,7 @@
       buttonInk:contrast('#ffffff',highlight) >= contrast('#000000',highlight) ? '#ffffff' : '#000000',
       scheme:ink === '#ffffff' ? 'dark' : 'light' };
   }
-  const api = { sciFiPalette, defaults, validate, safeUrl, parseBackup, engines, themes, icons };
+  const api = { artworks, artSpeeds, sciFiPalette, defaults, validate, safeUrl, parseBackup, engines, themes, icons };
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.HomeSettings = api;
 })(globalThis);

@@ -3,6 +3,7 @@ const $ = id => document.getElementById(id);
 const { defaults, validate, safeUrl, parseBackup, engines, themes, sciFiPalette } = HomeSettings;
 const storageKey = 'homepage-settings-v1';
 const themeNames = { light: 'Sage', dark: 'Forest', ocean: 'Ocean', lavender: 'Lavender', sunset: 'Sunset', midnight: 'Midnight', scifi: 'Sci-fi' };
+const artworkOptions = document.querySelectorAll('input[name="artwork"]');
 const themeOptions = document.querySelectorAll('input[name="theme"]');
 const dialog = $('customize-dialog');
 let settings = defaults();
@@ -73,7 +74,18 @@ function renderAppearance() {
   document.body.classList.toggle('compact', settings.compact);
   document.body.classList.toggle('has-background', !!settings.background);
   document.body.style.backgroundImage = settings.background ? `url("${settings.background}")` : '';
-  document.querySelector('.art').hidden = !settings.showArt;
+  const art = document.querySelector('.art');
+  art.hidden = !settings.showArt;
+  art.dataset.design = settings.artwork;
+  art.dataset.speed = settings.artSpeed;
+  art.style.setProperty('--art-duration', {off:'22s',slow:'22s',normal:'14s',fast:'8s'}[settings.artSpeed]);
+  art.style.setProperty('--art-ink',settings.artColor || 'var(--highlight)');
+  art.style.setProperty('--art-line',settings.artColor ? 'color-mix(in srgb,var(--art-ink) 45%,transparent)' : 'var(--line)');
+  art.style.setProperty('--art-glow',settings.artColor || 'var(--highlight)');
+  $('art-speed').value = settings.artSpeed;
+  $('art-color').value = settings.artColor || (settings.theme === 'scifi' ? settings.scifiAccent : '#73865b');
+  $('art-color-status').textContent = settings.artColor ? 'Custom artwork color. Your theme stays unchanged.' : 'Artwork follows your theme color.';
+  artworkOptions.forEach(option => { option.checked = option.value === settings.artwork; });
   document.querySelector('.shortcut-section').hidden = !settings.showShortcuts;
   document.querySelector('.focus-card').hidden = !settings.showFocus;
   document.querySelector('.focus-card').classList.toggle('completed', settings.focusDone);
@@ -204,6 +216,18 @@ dialog.addEventListener('click', event => {
   const bounds = dialog.getBoundingClientRect();
   if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
 });
+artworkOptions.forEach(option => option.addEventListener('change', () => {
+  settings.artwork = option.value; renderAppearance(); save('Artwork saved.');
+}));
+$('art-speed').addEventListener('change', () => {
+  settings.artSpeed = $('art-speed').value; renderAppearance(); save('Animation speed saved.');
+});
+$('art-color').addEventListener('input', () => {
+  settings.artColor = $('art-color').value; renderAppearance(); save('Artwork color saved.');
+});
+$('art-color-reset').addEventListener('click', () => {
+  settings.artColor = ''; renderAppearance(); save('Artwork uses your theme color.');
+});
 for (const part of ['accent','background']) {
   const picker = $(`scifi-${part}-picker`);
   const hex = $(`scifi-${part}-hex`);
@@ -293,5 +317,10 @@ $('import-settings').addEventListener('change', async event => {
     feedback('Settings imported successfully.');
   } catch (error) { feedback(error.name === 'SyntaxError' ? 'That file is not valid JSON.' : error.message || 'Could not import that backup.'); }
 });
+function syncMotionState() {
+  document.documentElement.dataset.motion = document.hidden ? 'paused' : 'running';
+}
+document.addEventListener('visibilitychange', syncMotionState);
+syncMotionState();
 syncControls(); renderAppearance(); renderShortcuts();
 setInterval(updateClock, 1000);

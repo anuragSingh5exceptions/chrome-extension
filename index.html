@@ -51,7 +51,13 @@
         <h2 id="greeting">Welcome back.</h2>
         <p class="intro">A fresh tab. A clear mind. Your next great thing.</p>
       </div>
-      <div class="art" aria-hidden="true"><div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div><div class="art-orbit orbit-three"></div><span class="art-star">✳</span><span class="art-dot"></span><div class="art-label">A LITTLE LESS NOISE.<br>A LITTLE MORE POSSIBILITY.</div><span class="art-coordinate">↗ 01 / IN THE MOMENT</span></div>
+      <div class="art" data-design="orbit" data-speed="slow" aria-hidden="true">
+        <div class="art-design design-orbit"><div class="art-orbit orbit-one"><span class="art-dot"></span></div><div class="art-orbit orbit-two"></div><div class="art-orbit orbit-three"></div><span class="art-star">✳</span></div>
+        <div class="art-design design-radar"><div class="radar-screen"><span class="radar-cross cross-horizontal"></span><span class="radar-cross cross-vertical"></span><span class="radar-sweep"></span><span class="radar-blip blip-one"></span><span class="radar-blip blip-two"></span><span class="radar-center"></span></div></div>
+        <div class="art-design design-planet"><div class="planet-scene"><span class="planet-ring ring-back"></span><span class="planet-body"></span><span class="planet-ring ring-front"></span><span class="planet-moon-track"><span class="planet-moon"></span></span></div></div>
+        <div class="art-design design-constellation"><svg class="constellation-lines" preserveAspectRatio="none" viewBox="0 0 200 150"><path d="M25 85 65 30 115 52 165 25 180 105 125 125 115 52M25 85l100 40"/></svg><span class="constellation-star star-one"></span><span class="constellation-star star-two"></span><span class="constellation-star star-three"></span><span class="constellation-star star-four"></span><span class="constellation-star star-five"></span><span class="constellation-star star-six"></span></div>
+        <div class="art-label">A LITTLE LESS NOISE.<br>A LITTLE MORE POSSIBILITY.</div><span class="art-coordinate">↗ 01 / IN THE MOMENT</span>
+      </div>
     </section>
 
     <form class="search" action="https://www.google.com/search" method="GET" role="search">
@@ -105,6 +111,18 @@
         <div><label for="scifi-background-picker">Background</label><div class="color-control"><input id="scifi-background-picker" type="color" value="#07111f" aria-label="Pick sci-fi background"><input id="scifi-background-hex" type="text" value="#07111f" maxlength="7" pattern="#[0-9a-fA-F]{6}" aria-label="Background hex color" spellcheck="false" autocomplete="off"></div></div>
       </div>
       <p id="scifi-color-status" class="settings-help" role="status" aria-live="polite"></p>
+    </section>
+    <section class="settings-section" aria-labelledby="artwork-heading">
+      <h3 id="artwork-heading">Your little universe</h3>
+      <p class="settings-help">Choose your artwork. Only the selected design animates.</p>
+      <fieldset class="artwork-options"><legend class="sr-only">Artwork design</legend>
+        <label class="artwork-option"><input type="radio" name="artwork" value="orbit"><span class="art-thumbnail" aria-hidden="true">✳</span><span>Orbit</span></label>
+        <label class="artwork-option"><input type="radio" name="artwork" value="radar"><span class="art-thumbnail" aria-hidden="true">◎</span><span>Radar</span></label>
+        <label class="artwork-option"><input type="radio" name="artwork" value="planet"><span class="art-thumbnail" aria-hidden="true">♄</span><span>Planet</span></label>
+        <label class="artwork-option"><input type="radio" name="artwork" value="constellation"><span class="art-thumbnail" aria-hidden="true">✧</span><span>Constellation</span></label>
+      </fieldset>
+      <div class="artwork-controls"><label for="art-speed">Animation speed<select id="art-speed"><option value="off">Still · no animation</option><option value="slow">Slow & calm</option><option value="normal">Normal</option><option value="fast">Lively</option></select></label><label for="art-color">Artwork color<input id="art-color" type="color" value="#4de3ff"></label><button id="art-color-reset" class="secondary-button" type="button">Use theme color</button></div>
+      <p id="art-color-status" class="settings-help" role="status"></p>
     </section>
     <section class="settings-section" aria-labelledby="personal-heading">
       <h3 id="personal-heading">Your everyday space</h3>
