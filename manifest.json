@@ -8,5 +8,17 @@
   },
   "optional_permissions": [
     "history"
-  ]
+  ],
+  "permissions": [
+    "identity"
+  ],
+  "optional_host_permissions": [
+    "https://www.googleapis.com/*"
+  ],
+  "oauth2": {
+    "client_id": "268125221541-bf7spj267056mk908mrcjue1afr7chp3.apps.googleusercontent.com",
+    "scopes": [
+      "https://www.googleapis.com/auth/calendar.events.readonly"
+    ]
+  }
 }

@@ -9,7 +9,7 @@
   };
   function defaults() {
     return { theme: 'light', name: '', clock: 'auto', compact: false, showArt: true,
-      showShortcuts: true, showFocus: true, showHistory: false, showWeekend: true, engine: 'google', background: '', focus: '', focusDone: false,
+      showShortcuts: true, showFocus: true, showHistory: false, showWeekend: true, showCalendar: true, engine: 'google', background: '', focus: '', focusDone: false,
       shortcuts: [
         { name: 'GitHub', url: 'https://github.com/', description: 'Build something great', icon: 'github' },
         { name: 'YouTube', url: 'https://youtube.com/', description: 'A little inspiration', icon: 'youtube' },
@@ -36,6 +36,8 @@
     next.showHistory = value.showHistory ?? false;
     if (value.showWeekend !== undefined && typeof value.showWeekend !== 'boolean') throw new Error('Invalid weekend calculator visibility.');
     next.showWeekend = value.showWeekend ?? true;
+    if (value.showCalendar !== undefined && typeof value.showCalendar !== 'boolean') throw new Error('Invalid calendar visibility.');
+    next.showCalendar = value.showCalendar ?? true;
     for (const [key,max] of [['name',40],['focus',160],['background',2800000]]) {
       if (!text(value[key], max)) throw new Error(`Invalid ${key}.`);
       next[key] = value[key];

@@ -49,7 +49,7 @@ function boot(initial = {}, failWrites = false) {
   const nodes=new Map();
   const get=id=>{if(!nodes.has(id))nodes.set(id,new Element());return nodes.get(id);};
   const radios=settingsApi.themes.map(value=>Object.assign(new Element(),{value}));
-  for (const key of ['compact','showArt','showShortcuts','showFocus','showHistory','showWeekend']) get('setting-'+key).type='checkbox';
+  for (const key of ['compact','showArt','showShortcuts','showFocus','showHistory','showWeekend','showCalendar']) get('setting-'+key).type='checkbox';
   const store=new Map(Object.entries(initial));
   const context={HomeSettings:settingsApi, document:{addEventListener(name,handler){this.listeners ||= {};this.listeners[name]=handler;},dispatchEvent(event){this.listeners?.[event.type]?.(event);},getElementById:get,querySelector:get,querySelectorAll:selector=>selector.includes('name=')?radios:[],createElement:()=>new Element(),body:new Element()},localStorage:{getItem:key=>store.get(key)||null,setItem:(key,value)=>{if(failWrites)throw Error('Quota');store.set(key,value);}},Date,Intl,URL,Event,setInterval(){},setTimeout(){},console};
   vm.runInNewContext(fs.readFileSync(require.resolve('../script.js'),'utf8'),context);
@@ -164,4 +164,19 @@ test('weekend visibility saves and old backups keep the widget enabled', () => {
   const old=settingsApi.defaults();delete old.showWeekend;
   assert.equal(settingsApi.validate(old).showWeekend,true);
   assert.throws(()=>settingsApi.validate({...old,showWeekend:'yes'}));
+});
+
+test('calendar visibility is independent of weekend visibility and survives restoration', () => {
+ const page=boot();
+ page.change('setting-showWeekend','',false);
+ assert.equal(page.get('calendar-widget').hidden,false);
+ assert.equal(page.get('.left-widgets').hidden,false);
+ page.change('setting-showCalendar','',false);
+ assert.equal(page.get('calendar-widget').hidden,true);
+ assert.equal(page.get('.left-widgets').hidden,true);
+ assert.equal(page.saved().showCalendar,false);
+ assert.equal(boot(Object.fromEntries(page.store)).get('setting-showCalendar').checked,false);
+ const old=settingsApi.defaults();delete old.showCalendar;
+ assert.equal(settingsApi.validate(old).showCalendar,true);
+ assert.throws(()=>settingsApi.validate({...old,showCalendar:'yes'}));
 });
