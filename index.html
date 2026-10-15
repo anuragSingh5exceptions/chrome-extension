@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <title>A little space — New tab</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <svg class="icon-definitions" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <symbol id="arrow" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
+    <symbol id="external" viewBox="0 0 24 24"><path d="M7 17 17 7M7 7h10v10"/></symbol>
+    <symbol id="sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></symbol>
+  </svg>
+
+  <header class="topbar">
+    <a class="wordmark" href="index.html" aria-label="Home"><span class="brand-mark" aria-hidden="true">✳</span> a little space<span class="brand-period">.</span></a>
+    <div class="header-tools"><span class="status"><span></span> Make room for a good day</span><button id="history-toggle" aria-label="Show browsing history" class="customize-button" type="button" aria-controls="history-panel" aria-expanded="false" title="Show browsing history"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3"/><path d="M15 4v16"/></svg><span>History</span></button><button id="customize-button" class="customize-button" type="button" aria-haspopup="dialog"><svg aria-hidden="true"><use href="#sun"/></svg> Customize</button></div>
+  </header>
+
+  <main>
+    <section class="hero" aria-labelledby="greeting">
+      <div class="hero-copy">
+        <p class="eyebrow" id="date">YOUR DAILY RESET</p>
+        <div class="time-row"><h1 id="clock" aria-label="Current time">00:00</h1><span id="period" class="period"></span></div>
+        <h2 id="greeting">Welcome back.</h2>
+        <p class="intro">A fresh tab. A clear mind. Your next great thing.</p>
+      </div>
+      <div class="art" aria-hidden="true"><div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div><div class="art-orbit orbit-three"></div><span class="art-star">✳</span><span class="art-dot"></span><div class="art-label">A LITTLE LESS NOISE.<br>A LITTLE MORE POSSIBILITY.</div><span class="art-coordinate">↗ 01 / IN THE MOMENT</span></div>
+    </section>
+
+    <form class="search" action="https://www.google.com/search" method="GET" role="search">
+      <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg>
+      <input id="search-input" type="search" name="q" placeholder="Where would you like to go?" aria-label="Search Google" autocomplete="off" autofocus required>
+      <span class="search-provider">Search with Google</span>
+      <button type="submit" aria-label="Search"><svg><use href="#arrow"/></svg></button>
+    </form>
+
+    <section class="shortcut-section" aria-labelledby="shortcut-heading">
+      <div class="section-heading"><h2 id="shortcut-heading">Your everyday essentials</h2><span>GOOD THINGS, ONE CLICK AWAY</span></div>
+      <div class="links">
+        <a class="shortcut" href="https://github.com"><span class="shortcut-icon github"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" stroke="none" d="M12 2a10 10 0 0 0-3.16 19.49c.5.09.68-.22.68-.48v-1.86c-2.78.6-3.37-1.18-3.37-1.18-.45-1.16-1.11-1.47-1.11-1.47-.91-.62.07-.61.07-.61 1 .07 1.53 1.03 1.53 1.03.89 1.53 2.34 1.09 2.91.83.09-.65.35-1.09.64-1.34-2.22-.25-4.56-1.11-4.56-4.94 0-1.09.39-1.98 1.03-2.68-.1-.25-.45-1.27.1-2.65 0 0 .84-.27 2.75 1.03A9.6 9.6 0 0 1 12 6.83c.85 0 1.71.11 2.51.34 1.91-1.3 2.75-1.03 2.75-1.03.55 1.38.2 2.4.1 2.65.64.7 1.03 1.59 1.03 2.68 0 3.84-2.34 4.69-4.57 4.94.36.31.68.92.68 1.85v2.75c0 .27.18.58.69.48A10 10 0 0 0 12 2Z"/></svg></span><span class="shortcut-copy"><strong>GitHub</strong><span>Build something great</span></span><svg class="external"><use href="#external"/></svg></a>
+        <a class="shortcut" href="https://youtube.com"><span class="shortcut-icon youtube"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5.5" width="18" height="13" rx="4"/><path d="m10 9 5 3-5 3Z" fill="currentColor" stroke="none"/></svg></span><span class="shortcut-copy"><strong>YouTube</strong><span>A little inspiration</span></span><svg class="external"><use href="#external"/></svg></a>
+        <a class="shortcut" href="https://gmail.com"><span class="shortcut-icon gmail"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="m4 7 8 6 8-6"/></svg></span><span class="shortcut-copy"><strong>Gmail</strong><span>Keep in touch</span></span><svg class="external"><use href="#external"/></svg></a>
+      </div>
+    </section>
+
+    <section class="focus-card" aria-labelledby="focus-label"><input id="focus-done" class="focus-check" type="checkbox" aria-label="Mark daily focus complete"><div class="focus-content"><label id="focus-label" for="daily-focus">ONE THING AT A TIME</label><input id="daily-focus" maxlength="160" placeholder="What's your main focus today?" autocomplete="off"><span id="focus-feedback" class="sr-only" role="status"></span></div><span class="focus-note">Small steps. Big possibilities.</span></section>
+
+
+  </main>
+  <footer><span>A space to begin again.</span><span>TAKE A BREATH. MAKE IT COUNT. <span class="footer-spark" aria-hidden="true">✳</span></span></footer>
+    <aside id="history-panel" class="history-section history-panel" aria-labelledby="history-heading" hidden>
+      <div class="section-heading"><div><p class="eyebrow">PICK UP WHERE YOU LEFT OFF</p><h2 id="history-heading">Browsing history</h2></div><button id="history-close" class="close-customize" type="button" aria-label="Close history sidebar">×</button></div>
+      <button id="history-refresh" class="secondary-button history-refresh" type="button" hidden>↻ Refresh</button>
+      <div class="history-toolbar" hidden id="history-toolbar"><label for="history-search" class="sr-only">Search browsing history</label><svg aria-hidden="true" viewBox="0 0 24 24"><circle cx="10.8" cy="10.8" r="6.8"/><path d="m16 16 4.5 4.5"/></svg><input id="history-search" type="search" placeholder="Find a page you visited…" maxlength="200" autocomplete="off"></div>
+      <p id="history-status" class="settings-help" role="status" aria-live="polite">Enable history to see your recent pages here.</p>
+      <button id="history-enable" class="secondary-button" type="button">Enable browsing history</button>
+      <div id="history-list" class="history-list" role="region" aria-label="Recent browsing history" tabindex="0" hidden></div>
+      <button id="history-more" class="secondary-button history-more" type="button" hidden>Show more</button>
+      <p class="history-note">Your history is read directly from Chrome and is never included in settings backups.</p>
+    </aside>
+  <dialog id="customize-dialog" aria-labelledby="customize-title" aria-describedby="customize-description">
+    <div class="customize-heading"><div><p class="eyebrow">MAKE IT YOURS</p><h2 id="customize-title">A space for your mood.</h2></div><button id="close-customize" class="close-customize" type="button" aria-label="Close customization">×</button></div>
+    <p id="customize-description">Make yourself at home. Changes save automatically on this device.</p>
+    <fieldset class="theme-options"><legend>Color theme</legend>
+      <label class="theme-option"><input type="radio" name="theme" value="light"><span class="theme-preview preview-light" aria-hidden="true"><span class="preview-orb"></span><span class="preview-bar"></span><span class="preview-cards"></span><span class="theme-check">✓</span></span><strong>Sage</strong><span class="theme-description">Warm & minimal</span></label>
+      <label class="theme-option"><input type="radio" name="theme" value="dark"><span class="theme-preview preview-dark" aria-hidden="true"><span class="preview-orb"></span><span class="preview-bar"></span><span class="preview-cards"></span><span class="theme-check">✓</span></span><strong>Forest</strong><span class="theme-description">Quiet & grounded</span></label>
+      <label class="theme-option"><input type="radio" name="theme" value="ocean"><span class="theme-preview preview-ocean" aria-hidden="true"><span class="preview-orb"></span><span class="preview-bar"></span><span class="preview-cards"></span><span class="theme-check">✓</span></span><strong>Ocean</strong><span class="theme-description">Cool & collected</span></label>
+      <label class="theme-option"><input type="radio" name="theme" value="lavender"><span class="theme-preview preview-lavender" aria-hidden="true"><span class="preview-orb"></span><span class="preview-bar"></span><span class="preview-cards"></span><span class="theme-check">✓</span></span><strong>Lavender</strong><span class="theme-description">Soft & dreamy</span></label>
+      <label class="theme-option"><input type="radio" name="theme" value="sunset"><span class="theme-preview preview-sunset" aria-hidden="true"><span class="preview-orb"></span><span class="preview-bar"></span><span class="preview-cards"></span><span class="theme-check">✓</span></span><strong>Sunset</strong><span class="theme-description">Warm & golden</span></label>
+      <label class="theme-option"><input type="radio" name="theme" value="midnight"><span class="theme-preview preview-midnight" aria-hidden="true"><span class="preview-orb"></span><span class="preview-bar"></span><span class="preview-cards"></span><span class="theme-check">✓</span></span><strong>Midnight</strong><span class="theme-description">Deep & focused</span></label>
+    </fieldset>
+    <section class="settings-section" aria-labelledby="personal-heading">
+      <h3 id="personal-heading">Your everyday space</h3>
+      <div class="settings-grid">
+        <label>Your name<input id="setting-name" maxlength="40" placeholder="What should we call you?" autocomplete="given-name"></label>
+        <label>Clock format<select id="setting-clock"><option value="auto">Device default</option><option value="12">12 hour</option><option value="24">24 hour</option></select></label>
+        <label>Search engine<select id="setting-engine"><option value="google">Google</option><option value="duckduckgo">DuckDuckGo</option><option value="bing">Bing</option></select></label>
+      </div>
+      <div class="layout-options"><label><input id="setting-compact" type="checkbox"> Compact layout</label><label><input id="setting-showArt" type="checkbox"> Decorative artwork</label><label><input id="setting-showShortcuts" type="checkbox"> Shortcuts</label><label><input id="setting-showFocus" type="checkbox"> Daily focus</label><label><input id="setting-showHistory" type="checkbox"> History sidebar</label></div>
+      <div class="background-controls"><label class="file-button">Choose background<input id="background-file" class="sr-only" type="file" accept="image/png,image/jpeg,image/webp"></label><button id="remove-background" class="secondary-button" type="button">Remove background</button></div>
+      <p class="settings-help">Choose a PNG, JPEG, or WebP up to 2 MB. Your photo stays on this device.</p>
+    </section>
+    <section class="settings-section" aria-labelledby="manage-shortcuts-heading">
+      <div class="section-heading"><h3 id="manage-shortcuts-heading">Your shortcuts</h3><button id="add-shortcut" class="secondary-button" type="button">+ Add shortcut</button></div>
+      <p class="settings-help">Keep up to 18 favorites. Use the arrows to change their order.</p>
+      <div id="shortcut-list"></div>
+      <form id="shortcut-editor" class="shortcut-editor" hidden>
+        <h4 id="shortcut-editor-title">Add shortcut</h4>
+        <div class="settings-grid"><label>Name<input id="shortcut-name" maxlength="40" required></label><label>Website<input id="shortcut-url" type="text" placeholder="example.com" maxlength="2048" required></label><label>Description<input id="shortcut-description" maxlength="80" placeholder="Optional"></label><label>Icon<select id="shortcut-icon"><option value="github">GitHub</option><option value="youtube">YouTube</option><option value="gmail">Mail</option><option value="star">Star</option><option value="code">Code</option><option value="book">Book</option><option value="globe">Globe</option></select></label></div>
+        <p id="shortcut-error" class="settings-help" role="alert"></p>
+        <div class="editor-actions"><button class="secondary-button" type="submit">Save shortcut</button><button id="cancel-shortcut" class="secondary-button" type="button">Cancel</button></div>
+      </form>
+    </section>
+    <section class="settings-section" aria-labelledby="backup-heading"><h3 id="backup-heading">Take your space with you</h3><p class="settings-help">Back up your preferences, shortcuts, focus, and background. Importing replaces your current settings.</p><div class="background-controls"><button id="export-settings" class="secondary-button" type="button">Export settings</button><label class="file-button">Import settings<input id="import-settings" class="sr-only" type="file" accept="application/json,.json"></label></div></section>
+    <div class="customize-footer"><span id="theme-feedback" role="status" aria-live="polite"></span><button id="done-customize" type="button">Done <svg aria-hidden="true"><use href="#arrow"/></svg></button></div>
+  </dialog>
+  <script src="settings.js"></script>
+  <script src="script.js"></script>
+  <script src="history.js"></script>
+</body>
+</html>

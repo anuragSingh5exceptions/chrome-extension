@@ -1,0 +1,15 @@
+# Local system and editor files
+.DS_Store
+.AppleDouble
+.vscode/
+.idea/
+
+# Dependencies and generated output
+node_modules/
+coverage/
+*.log
+
+# Local environment files
+.env
+.env.*
+!.env.example
