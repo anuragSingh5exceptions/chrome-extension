@@ -9,7 +9,7 @@
   };
   function defaults() {
     return { theme: 'light', name: '', clock: 'auto', compact: false, showArt: true,
-      showShortcuts: true, showFocus: true, showHistory: false, engine: 'google', background: '', focus: '', focusDone: false,
+      showShortcuts: true, showFocus: true, showHistory: false, showWeekend: true, engine: 'google', background: '', focus: '', focusDone: false,
       shortcuts: [
         { name: 'GitHub', url: 'https://github.com/', description: 'Build something great', icon: 'github' },
         { name: 'YouTube', url: 'https://youtube.com/', description: 'A little inspiration', icon: 'youtube' },
@@ -34,6 +34,8 @@
     // Older settings and backups predate the optional sidebar.
     if (value.showHistory !== undefined && typeof value.showHistory !== 'boolean') throw new Error('Invalid history visibility.');
     next.showHistory = value.showHistory ?? false;
+    if (value.showWeekend !== undefined && typeof value.showWeekend !== 'boolean') throw new Error('Invalid weekend calculator visibility.');
+    next.showWeekend = value.showWeekend ?? true;
     for (const [key,max] of [['name',40],['focus',160],['background',2800000]]) {
       if (!text(value[key], max)) throw new Error(`Invalid ${key}.`);
       next[key] = value[key];

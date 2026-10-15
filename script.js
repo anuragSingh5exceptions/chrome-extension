@@ -48,6 +48,8 @@ function updateClock() {
 
 function renderAppearance() {
   document.body.dataset.theme = settings.theme;
+  document.querySelector('.weekend-widget').hidden = !settings.showWeekend;
+  document.body.classList.toggle('weekend-visible', settings.showWeekend);
   const historyChanged = $('history-panel').hidden === settings.showHistory;
   $('history-panel').hidden = !settings.showHistory;
   document.body.classList.toggle('history-open', settings.showHistory);
@@ -73,7 +75,7 @@ function renderAppearance() {
 function syncControls() {
   themeOptions.forEach(option => { option.checked = option.value === settings.theme; });
   for (const key of ['name', 'clock', 'engine']) $(`setting-${key}`).value = settings[key];
-  for (const key of ['compact', 'showArt', 'showShortcuts', 'showFocus', 'showHistory']) $(`setting-${key}`).checked = settings[key];
+  for (const key of ['compact', 'showArt', 'showShortcuts', 'showFocus', 'showHistory', 'showWeekend']) $(`setting-${key}`).checked = settings[key];
   $('daily-focus').value = settings.focus;
   $('focus-done').checked = settings.focusDone;
   $('focus-done').disabled = !settings.focus.trim();
@@ -184,7 +186,7 @@ dialog.addEventListener('click', event => {
 themeOptions.forEach(option => option.addEventListener('change', () => {
   settings.theme = option.value; renderAppearance(); save(`${themeNames[settings.theme]} theme saved.`);
 }));
-for (const key of ['name','clock','engine','compact','showArt','showShortcuts','showFocus','showHistory']) {
+for (const key of ['name','clock','engine','compact','showArt','showShortcuts','showFocus','showHistory','showWeekend']) {
   const control = $(`setting-${key}`);
   control.addEventListener(key === 'name' ? 'input' : 'change', () => {
     settings[key] = control.type === 'checkbox' ? control.checked : control.value;

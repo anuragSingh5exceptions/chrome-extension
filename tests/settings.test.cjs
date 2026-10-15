@@ -49,7 +49,7 @@ function boot(initial = {}, failWrites = false) {
   const nodes=new Map();
   const get=id=>{if(!nodes.has(id))nodes.set(id,new Element());return nodes.get(id);};
   const radios=settingsApi.themes.map(value=>Object.assign(new Element(),{value}));
-  for (const key of ['compact','showArt','showShortcuts','showFocus','showHistory']) get('setting-'+key).type='checkbox';
+  for (const key of ['compact','showArt','showShortcuts','showFocus','showHistory','showWeekend']) get('setting-'+key).type='checkbox';
   const store=new Map(Object.entries(initial));
   const context={HomeSettings:settingsApi, document:{addEventListener(name,handler){this.listeners ||= {};this.listeners[name]=handler;},dispatchEvent(event){this.listeners?.[event.type]?.(event);},getElementById:get,querySelector:get,querySelectorAll:selector=>selector.includes('name=')?radios:[],createElement:()=>new Element(),body:new Element()},localStorage:{getItem:key=>store.get(key)||null,setItem:(key,value)=>{if(failWrites)throw Error('Quota');store.set(key,value);}},Date,Intl,URL,Event,setInterval(){},setTimeout(){},console};
   vm.runInNewContext(fs.readFileSync(require.resolve('../script.js'),'utf8'),context);
@@ -153,4 +153,15 @@ test('old backups default to a hidden sidebar without losing preferences', () =>
   assert.equal(settingsApi.validate(old).showHistory,false);
   assert.equal(settingsApi.validate(old).name,'Existing user');
   assert.throws(()=>settingsApi.validate({...old,showHistory:'yes'}));
+});
+
+test('weekend visibility saves and old backups keep the widget enabled', () => {
+  const page=boot();assert.equal(page.get('.weekend-widget').hidden,false);
+  page.change('setting-showWeekend','',false);
+  assert.equal(page.get('.weekend-widget').hidden,true);
+  assert.equal(page.saved().showWeekend,false);
+  assert.equal(boot(Object.fromEntries(page.store)).get('setting-showWeekend').checked,false);
+  const old=settingsApi.defaults();delete old.showWeekend;
+  assert.equal(settingsApi.validate(old).showWeekend,true);
+  assert.throws(()=>settingsApi.validate({...old,showWeekend:'yes'}));
 });

@@ -20,6 +20,18 @@
   </header>
 
   <main>
+    <aside class="weekend-widget" aria-labelledby="weekend-title">
+      <p class="eyebrow">A LITTLE TIME FOR YOU</p>
+      <div class="weekend-heading"><h2 id="weekend-title">Hello, weekend.</h2><span aria-hidden="true">☀</span></div>
+      <p id="weekend-state" class="weekend-state">Your next pause is on its way.</p>
+      <div class="weekend-countdown" role="timer" aria-label="Time until the weekend">
+        <div><strong id="weekend-days">—</strong><span>days</span></div><span aria-hidden="true">:</span><div><strong id="weekend-hours">—</strong><span>hours</span></div><span aria-hidden="true">:</span><div><strong id="weekend-minutes">—</strong><span>mins</span></div>
+      </div>
+      <p id="weekend-target" class="weekend-target"></p>
+      <div class="weekend-week" aria-label="Days of the week"><span data-weekday="1">M</span><span data-weekday="2">T</span><span data-weekday="3">W</span><span data-weekday="4">T</span><span data-weekday="5">F</span><span data-weekday="6" class="weekend-day">S</span><span data-weekday="0" class="weekend-day">S</span></div>
+      <details class="weekend-range"><summary>Calculate weekend days <span aria-hidden="true">+</span></summary><form id="weekend-form"><label for="weekend-start">From</label><input id="weekend-start" type="date" min="1000-01-01" max="9999-12-31" required><label for="weekend-end">To</label><input id="weekend-end" type="date" min="1000-01-01" max="9999-12-31" required><button class="secondary-button" type="submit">Calculate <span aria-hidden="true">↗</span></button><p id="weekend-result" class="weekend-result" role="status" aria-live="polite"></p><p class="weekend-help">Saturday & Sunday. Both dates included.</p></form></details>
+    </aside>
+    <div class="dashboard-content">
     <section class="hero" aria-labelledby="greeting">
       <div class="hero-copy">
         <p class="eyebrow" id="date">YOUR DAILY RESET</p>
@@ -48,7 +60,7 @@
 
     <section class="focus-card" aria-labelledby="focus-label"><input id="focus-done" class="focus-check" type="checkbox" aria-label="Mark daily focus complete"><div class="focus-content"><label id="focus-label" for="daily-focus">ONE THING AT A TIME</label><input id="daily-focus" maxlength="160" placeholder="What's your main focus today?" autocomplete="off"><span id="focus-feedback" class="sr-only" role="status"></span></div><span class="focus-note">Small steps. Big possibilities.</span></section>
 
-
+    </div>
   </main>
   <footer><span>A space to begin again.</span><span>TAKE A BREATH. MAKE IT COUNT. <span class="footer-spark" aria-hidden="true">✳</span></span></footer>
     <aside id="history-panel" class="history-section history-panel" aria-labelledby="history-heading" hidden>
@@ -79,7 +91,7 @@
         <label>Clock format<select id="setting-clock"><option value="auto">Device default</option><option value="12">12 hour</option><option value="24">24 hour</option></select></label>
         <label>Search engine<select id="setting-engine"><option value="google">Google</option><option value="duckduckgo">DuckDuckGo</option><option value="bing">Bing</option></select></label>
       </div>
-      <div class="layout-options"><label><input id="setting-compact" type="checkbox"> Compact layout</label><label><input id="setting-showArt" type="checkbox"> Decorative artwork</label><label><input id="setting-showShortcuts" type="checkbox"> Shortcuts</label><label><input id="setting-showFocus" type="checkbox"> Daily focus</label><label><input id="setting-showHistory" type="checkbox"> History sidebar</label></div>
+      <div class="layout-options"><label><input id="setting-compact" type="checkbox"> Compact layout</label><label><input id="setting-showArt" type="checkbox"> Decorative artwork</label><label><input id="setting-showShortcuts" type="checkbox"> Shortcuts</label><label><input id="setting-showFocus" type="checkbox"> Daily focus</label><label><input id="setting-showWeekend" type="checkbox"> Weekend calculator</label><label><input id="setting-showHistory" type="checkbox"> History sidebar</label></div>
       <div class="background-controls"><label class="file-button">Choose background<input id="background-file" class="sr-only" type="file" accept="image/png,image/jpeg,image/webp"></label><button id="remove-background" class="secondary-button" type="button">Remove background</button></div>
       <p class="settings-help">Choose a PNG, JPEG, or WebP up to 2 MB. Your photo stays on this device.</p>
     </section>
@@ -98,6 +110,7 @@
     <div class="customize-footer"><span id="theme-feedback" role="status" aria-live="polite"></span><button id="done-customize" type="button">Done <svg aria-hidden="true"><use href="#arrow"/></svg></button></div>
   </dialog>
   <script src="settings.js"></script>
+  <script src="weekend.js"></script>
   <script src="script.js"></script>
   <script src="history.js"></script>
 </body>
